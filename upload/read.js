@@ -1,5 +1,7 @@
 const request = require('request-promise');
 const cheerio = require('cheerio');
+
+// 获取标签列表
 exports.tags = async function (url) {
   let options = {
     url,
@@ -29,6 +31,7 @@ exports.tags = async function (url) {
   });
 }
 
+// 获取文章列表
 exports.articleList = async function (url) {
   let options = {
     url,
@@ -55,6 +58,28 @@ exports.articleList = async function (url) {
   });
 }
 
+// 获取文章详情
+exports.articleDetail = async function(url) {
+  let options = {
+    url,
+    transform(body) {
+      return cheerio.load(body); //转成jQuery对象 $
+    }
+  }
+  return request(options).then($ => {
+    let content = $('.article-content').first().html();
+    let tagTitles = $('.tag-list .item .tag-title');
+    let tags = [];
+    tagTitles.each((index, item) => {
+      tags.push($(item).text())
+    });
+    return {
+      content,
+      tags
+    }
+  });
+}
+
 
 
 
@@ -63,8 +88,13 @@ exports.articleList = async function (url) {
 //     console.log(tags);
 // });
 
-let articleUrl = 'https://juejin.im/tag/%E5%89%8D%E7%AB%AF';
-exports.articleList(articleUrl).then(articles => {
-    console.log(articles);
+// let articleUrl = 'https://juejin.im/tag/%E5%89%8D%E7%AB%AF';
+// exports.articleList(articleUrl).then(articles => {
+//     console.log(articles);
+// });
+
+let articleDetailUrl = 'https://juejin.im/post/5c0734fc51882516cd70d1ed';
+exports.articleDetail(articleDetailUrl).then(detail => {
+  console.log(detail)
 });
 
