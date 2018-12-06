@@ -31,35 +31,8 @@ exports.tags = async function (url) {
   });
 }
 
-// 获取文章列表
-exports.articleList = async function (url) {
-  let options = {
-    url,
-    transform(body) {
-      return cheerio.load(body); //转成jQuery对象 $
-    }
-  }
-  return request(options).then($ => {
-    let infos = $('.info-box .title-row .title');
-    let articles = [];
-    infos.each((index, item) => {
-      const article = $(item);
-      let href = article.attr('href')
-      const title = article.text()
-      const id = href.slice(6)
-      href = `https://juejin.im${href}`;
-      articles.push({
-        id,
-        href,
-        title
-      });
-    });
-    return articles
-  });
-}
-
 // 获取文章详情
-exports.articleDetail = async function(url) {
+async function articleDetail(url) {
   let options = {
     url,
     transform(body) {
@@ -80,6 +53,40 @@ exports.articleDetail = async function(url) {
   });
 }
 
+// 获取文章列表
+exports.articleList = async function (url) {
+  let options = {
+    url,
+    transform(body) {
+      return cheerio.load(body); //转成jQuery对象 $
+    }
+  }
+  return request(options).then(async $ => {
+    let infos = $('.info-box .title-row .title');
+    let articles = [];
+
+    // 拿到列表 （在foreach里面不能使用await）
+    for (let i = 0; i < infos.length; i++) {
+      const article = $(infos[i]);
+      let href = article.attr('href')
+      const title = article.text()
+      const id = href.slice(6)
+      href = `https://juejin.im${href}`;
+      let detail = await articleDetail(href);
+      articles.push({
+        id,
+        href,
+        title,
+        content: detail.content,
+        tags: detail.tags
+      });
+    }
+    return articles
+  });
+}
+
+
+
 
 
 
@@ -88,13 +95,14 @@ exports.articleDetail = async function(url) {
 //     console.log(tags);
 // });
 
-// let articleUrl = 'https://juejin.im/tag/%E5%89%8D%E7%AB%AF';
-// exports.articleList(articleUrl).then(articles => {
-//     console.log(articles);
+let articleUrl = 'https://juejin.im/tag/%E5%89%8D%E7%AB%AF';
+exports.articleList(articleUrl).then(articles => {
+  console.log(articles);
+});
+
+// let articleDetailUrl = 'https://juejin.im/post/5c0734fc51882516cd70d1ed';
+// exports.articleDetail(articleDetailUrl).then(detail => {
+//   console.log(detail)
 // });
 
-let articleDetailUrl = 'https://juejin.im/post/5c0734fc51882516cd70d1ed';
-exports.articleDetail(articleDetailUrl).then(detail => {
-  console.log(detail)
-});
 
