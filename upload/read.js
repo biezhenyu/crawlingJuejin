@@ -27,7 +27,7 @@ exports.tags = async function (url) {
         article: Number(article.match(/^(\d+)/)[1])
       });
     });
-    return tags.slice(0, 2);
+    return tags;
   });
 }
 
@@ -95,10 +95,10 @@ exports.articleList = async function (url) {
 //     console.log(tags);
 // });
 
-let articleUrl = 'https://juejin.im/tag/%E5%89%8D%E7%AB%AF';
-exports.articleList(articleUrl).then(articles => {
-  console.log(articles);
-});
+// let articleUrl = 'https://juejin.im/tag/%E5%89%8D%E7%AB%AF';
+// exports.articleList(articleUrl).then(articles => {
+//   console.log(articles);
+// });
 
 // let articleDetailUrl = 'https://juejin.im/post/5c0734fc51882516cd70d1ed';
 // exports.articleDetail(articleDetailUrl).then(detail => {
