@@ -4,7 +4,7 @@ exports.tags = async function (tags) {
     // 查询数据库是否有数据
     let oldTag = await query(`SELECT * from tags WHERE name = ? LIMIT 1`, [tag.title]);
     if (Array.isArray(oldTag) && oldTag.length > 0) {
-      await query(`UPDATE tags SET name=?, image=?, url=?, url=? WHERE id=?`, [tag.title, tag.image, tag.href, oldTag[0].id])
+      await query(`UPDATE tags SET name=?, image=?, url=? WHERE id=?`, [tag.title, tag.image, tag.href, oldTag[0].id])
     } else {
       await query(`INSERT INTO tags(name, image, url, subscribe, article) VALUES(?,?,?,?,?)`, [tag.title, tag.image, tag.href, tag.subscribe, tag.article])
     }
@@ -19,7 +19,7 @@ exports.articleList = async (articleList) => {
 
       await query(`UPDATE articles SET title=?, content=?, href=? WHERE id=?`, [article.title, article.content, article.href, article.id]);
     } else {
-      await query(`INSERT INTO articles(id, title, href, content) VALUES(?,?,?,?)`, [article.id, article.title, article.content, article.href]);
+      await query(`INSERT INTO articles(id, title, href, content) VALUES(?,?,?,?)`, [article.id, article.title, article.href, article.content]);
     }
 
     

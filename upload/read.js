@@ -27,7 +27,7 @@ exports.tags = async function (url) {
         article: Number(article.match(/^(\d+)/)[1])
       });
     });
-    return tags;
+    return tags.slice(0, 1);
   });
 }
 
